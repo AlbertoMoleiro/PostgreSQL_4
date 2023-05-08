@@ -34,6 +34,7 @@ SELECT customer_id, company_name, country FROM customers WHERE country = 'Spain'
 SELECT customer_id, company_name, country FROM customers WHERE country LIKE 'U%';
 --Obtener de la tabla de Customers las columnas CustomerId, CompanyName, Pais, Obtener los clientes cuyo pais comience con la letra U,S,A.
 SELECT customer_id, company_name, country FROM customers WHERE country LIKE 'U%' OR country LIKE 'S%' OR country LIKE 'A%';
+SELECT customer_id, company_name, country FROM customers WHERE LEFT(country,1) IN ('U','A','S');
 --Obtener de la tabla de Productos las columnas productid, ProductName, UnitPrice cuyos precios esten entre 50 y 150
 SELECT product_id, product_name, unit_price FROM products WHERE unit_price BETWEEN 50 AND 150;
 --Obtener de la tabla de Productos las columnas productid, ProductName, UnitPrice, UnitsInStock cuyas existencias esten entre 50 y 100
@@ -51,7 +52,10 @@ SELECT * FROM products ORDER BY category_id ASC, unit_price DESC;
 SELECT customer_id, company_name, city, country FROM customers ORDER BY country ASC, city ASC;
 
 -- Obtener los productos productid, productname, categoryid, supplierid ordenar por categoryid y supplier únicamente mostrar aquellos cuyo precio esté entre 25 y 200
-SELECT product_id, product_name, category_id, supplier_id FROM products WHERE unit_price BETWEEN 25 AND 200 ORDER BY category_id ASC, supplier_id ASC;
+SELECT product_id, product_name, category_id, supplier_id 
+FROM products 
+WHERE unit_price BETWEEN 25 AND 200 
+ORDER BY category_id ASC, supplier_id ASC;
 
 
 --Funciones agregación
@@ -99,7 +103,7 @@ SELECT ship_city, SUM(freight) AS suma_envio FROM orders WHERE ship_city IN ('Ma
 --obtener el precio promedio de los productos por categoria sin contar con los productos descontinuados (Discontinued)
 SELECT category_id, AVG(unit_price) FROM products WHERE discontinued = 0 GROUP BY category_id;
 --Obtener la cantidad de productos por categoria,  aquellos cuyo precio se encuentre entre 10 y 60 que tengan más de 12 productos
-SELECT category_id, COUNT(*) FROM products WHERE unit_price BETWEEN 10 AND 60 AND units_in_stock > 12 GROUP BY category_id;
+SELECT category_id, COUNT(*) FROM products WHERE unit_price BETWEEN 10 AND 60 GROUP BY category_id HAVING COUNT(*) > 12;
 --OBTENER LA SUMA DE LAS UNIDADES EN EXISTENCIA (UnitsInStock) POR CATEGORIA, Y TOMANDO EN CUENTA UNICAMENTE LOS PRODUCTOS CUYO PROVEEDOR (SupplierID) SEA IGUAL A 17, 19, 16.
 --cuya categoria tenga menos de 100 unidades ordenado por unidades
 SELECT category_id, units_exist 
@@ -111,7 +115,12 @@ FROM (
 WHERE units_exist > 100 
 ORDER BY units_exist;
 
-SELECT category_id, SUM(units_in_stock) AS units_exist FROM products WHERE supplier_id IN (17, 19, 16) GROUP BY category_id HAVING SUM(units_in_stock) > 100 ORDER BY units_exist;
+SELECT category_id, SUM(units_in_stock) AS units_exist 
+FROM products 
+WHERE supplier_id IN (17, 19, 16) 
+GROUP BY category_id 
+HAVING SUM(units_in_stock) > 100 
+ORDER BY units_exist;
 
 
 
